@@ -1,0 +1,39 @@
+name: Convert Files to PDF
+on:
+  push:
+    branches:
+      - main
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    container:
+      image: pandoc/latex:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install nbconvert (only needed for .ipynb files)
+      - name: Install nbconvert
+        run: |
+          pip install nbconvert
+
+      # Convert all .md and .ipynb files to PDF
+      - name: Convert files to PDF
+        run: |
+          # Convert all .md files to PDF
+          for file in *.md; do
+            pandoc "$file" -o "${file%.md}.pdf" --pdf-engine=xelatex
+          done
+
+          # Convert all .ipynb files to PDF
+          for file in Third_Project.ipynb; do
+            jupyter nbconvert --to pdf "$file"
+          done
+
+      # Upload PDF artifacts
+      - name: Upload PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-files
+          path: |
+            *.pdf
