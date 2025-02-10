@@ -21,7 +21,22 @@ PySpark is the Python API for Apache Spark, used for big data processing. This c
 
 ---
 
-## Creating a SparkSession
+## Installing PySpark 
+We use below code to install PySpark in Google Colab. 
+
+```python
+# Install PySpark in Google Colab
+!pip install pyspark
+```
+
+
+## Creating a SparkSession and Importing Necessary Libraries
+Below is for libraries.
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+
+Below is for creating a Spark session
+spark = SparkSession.builder.appName("Practise_PySpark").getOrCreate()
 
 ```python
 from pyspark.sql import SparkSession
