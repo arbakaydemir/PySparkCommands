@@ -10,13 +10,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install LaTeX (texlive)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
+
       - name: Convert Markdown to PDF
         uses: docker://pandoc/core:latest
         with:
           args: README.md -o output.pdf
 
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: output.pdf
           path: output.pdf
