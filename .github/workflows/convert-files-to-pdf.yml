@@ -6,29 +6,26 @@ on:
 jobs:
   convert:
     runs-on: ubuntu-latest
-    container:
-      image: pandoc/latex:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Install nbconvert (only needed for .ipynb files)
-      - name: Install nbconvert
+      # Install dependencies
+      - name: Install LaTeX, Pandoc, and nbconvert
         run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex texlive-fonts-recommended texlive-fonts-extra pandoc
           pip install nbconvert
 
-      # Convert all .md and .ipynb files to PDF
-      - name: Convert files to PDF
+      # Convert Markdown to PDF
+      - name: Convert README.md to PDF
         run: |
-          # Convert all .md files to PDF
-          for file in *.md; do
-            pandoc "$file" -o "${file%.md}.pdf" --pdf-engine=xelatex
-          done
+          pandoc README.md -o README.pdf --pdf-engine=xelatex
 
-          # Convert all .ipynb files to PDF
-          for file in Third_Project.ipynb; do
-            jupyter nbconvert --to pdf "$file"
-          done
+      # Convert Jupyter Notebook to PDF
+      - name: Convert Third_Project.ipynb to PDF
+        run: |
+          jupyter nbconvert --to pdf Third_Project.ipynb
 
       # Upload PDF artifacts
       - name: Upload PDF artifacts
@@ -36,4 +33,5 @@ jobs:
         with:
           name: pdf-files
           path: |
-            *.pdf
+            README.pdf
+            Third_Project.pdf
