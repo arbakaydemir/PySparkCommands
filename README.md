@@ -250,7 +250,7 @@ df = df.withColumn("value", regexp_replace(col("value"), " %", "").cast("float")
 
 *     In case of negative number contains comma:
 
-     1. Comma as Thousands Separator: If the comma is intended to separate thousands, you can remove the comma and then cast the string to an integer or float.
+1. Comma as Thousands Separator: If the comma is intended to separate thousands, you can remove the comma and then cast the string to an integer or float.
 
 ```python
 # Remove commas and cast to integer
@@ -258,7 +258,7 @@ df = df.withColumn("value", regexp_replace(col("value"), " %", "").cast("float")
 df = df.withColumn("value", regexp_replace(col("value"), ",", "").cast("integer"))
 ```
 
-     2. Comma as Decimal Separator: If the comma is meant to be a decimal point, you should replace the comma with a dot before casting it to a float or double.
+2. Comma as Decimal Separator: If the comma is meant to be a decimal point, you should replace the comma with a dot before casting it to a float or double.
 
 ```python
 # Replace commas with dots and cast to float
