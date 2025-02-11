@@ -99,9 +99,9 @@ df = spark.read.option("multiline","true").json(file_path)
 *    df.distinct().count(): This is for returning the number of distinct rows.
 
 ```python
-df.printSchema()  # Shows schema
-print(df.count())  # Number of rows
-df.describe().show()  # Summary statistics
+df.printSchema()
+print(df.count())
+df.describe().show()
 df.show()
 display(df)
 len(df.columns)
@@ -114,50 +114,77 @@ df.distinct().count()
 ---
 
 ## DataFrame Transformation
-
-
+### Column Operations
+*     df.drop(): This is used to drop a specific column from the df.
+*     df.withColumnRenamed(): It renames a column in the DataFrame. It needs two arguments, first old column name, then new column name.
+*     df.withColumnRenamed().withColumnRenamed(): It renames multiple columns, you need to give two column names and separetely add two withColumnRenamed() arguments.
+*    columns_to_rename {"country":"Country","population":"Population"}
+     for old_name, new_name in columns_to_rename.items():
+        df = withColumnRenamed(old_name, new_name)
+     This is for loop to rename multiple columns.
+*    df.select().show(): This method used to select specific columns from the DataFrame and displays the result using show() method.
+*    df.select('*').show(): It selects all columns from DataFrame, and show() is used to display the result.
+*    df.select(["country"]).show(): In this one, there is one difference from df.select("column1"). Columns are provided as list.
+*    df.select(["country", "density_per_square_km"]).show(): In this one, there are two difference from df.select("column1"). Columns are provided as lists and multiple columns are selected.
+            
 ```python
 df.drop("density_per_square_km")
-df.filter(df["age"] > 30).show()
-df.select("name", "age").show()
 df.withColumnRenamed()
 df.withColumnRenamed("country", "Country").withColumnRenamed(
     "density_per_square_km", "density_squarekm"
-df.withColumnsRenamed(
-    {"country": "Country", "density_per_square_km": "density_squarekm"}
+
+# Rename multiple columns using a loop
+columns_to_rename = {"country": "Country", "density_per_square_km": "density_squarekm"}
+for old_name, new_name in columns_to_rename.items():
+    df = df.withColumnRenamed(old_name, new_name)
+
+df.select("name", "age").show()
+df.select('*').show()
+df.select(["country"]).show()
+df.select(["country", "density_per_square_km"]).show()
 )
 
 ```
 
-## Filtering and Selecting Data
-
+### Row Operations Filtering and Selecting Data
+df.drop("column1"):
+df.filter(df["column1"] > 30).show():
+df.where(df["age"] > 30).show():
 
 ```python
 df.drop("density_per_square_km")
 df.filter(df["age"] > 30).show()
-df.select("name", "age").show()
-df.withColumnRenamed()
-df.withColumnRenamed("country", "Country").withColumnRenamed(
-    "density_per_square_km", "density_squarekm"
-df.withColumnsRenamed(
-    {"country": "Country", "density_per_square_km": "density_squarekm"}
+df.where(df["age"] > 30).show()
 )
 
 ```
 
-**Explanation:** Filters rows and selects specific columns.
-
----
-
-## Aggregations
+### Aggregations
 
 ```python
-from pyspark.sql.functions import avg, count
-
 df.groupBy("department").agg(avg("salary"), count("id")).show()
+Window.partitionBy("col").orderBy("col")
 ```
 
 **Explanation:** Performs group-wise aggregations like average salary and count of employees.
+
+---
+
+### Joins
+Inner Join: df1.join(df2, on="key", how="inner")
+
+Left Join: df1.join(df2, on="key", how="left")
+
+
+```python
+df1.join(df2, on="key", how="inner")
+df1.join(df2, on="key", how="left")
+
+window_spec = Window.partitionBy("department").orderBy("salary")
+df.withColumn("rank", row_number().over(window_spec)).show()
+```
+
+**Explanation:** Assigns a ranking within each department based on salary.
 
 ---
 
