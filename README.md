@@ -21,7 +21,7 @@
 
 ## Introduction
 
-PySpark is the Python API for Apache Spark, used for big data processing. This cheatsheet provides quick reference code snippets with explanations.
+PySpark is the Python API for Apache Spark, used for big data processing. This cheatsheet provides quick reference code snippets with explanations in Second and Third Projects. They are provided as ipynb files in the reopistory.
 
 ---
 
