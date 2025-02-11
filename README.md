@@ -1,6 +1,5 @@
 # PySpark Cheatsheet
 
----
 
 ## Table of Contents
 
@@ -19,7 +18,6 @@
 13. [Joining DataFrames](#joining-dataframes)
 14. [Saving Data](#saving-data)
 
----
 
 ## Introduction
 
