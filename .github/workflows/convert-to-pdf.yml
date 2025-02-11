@@ -3,7 +3,7 @@ name: Convert Notebooks & README to PDF
 on:
   push:
     branches:
-      - main  # Runs when you push to the main branch
+      - main  # Runs when pushing to main branch
   workflow_dispatch:  # Allows manual trigger
 
 jobs:
@@ -21,10 +21,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install nbconvert pandoc
+          pip install nbconvert
+
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
 
       - name: Install LaTeX (required for PDF conversion)
-        run: sudo apt-get install -y texlive-xetex texlive-fonts-recommended texlive-plain-generic
+        run: |
+          sudo apt-get install -y texlive-xetex texlive-fonts-recommended texlive-plain-generic
 
       - name: Convert Jupyter notebooks to PDF
         run: |
