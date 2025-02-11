@@ -1,0 +1,42 @@
+name: Convert Notebooks & README to PDF
+
+on:
+  push:
+    branches:
+      - main  # Run on push to main branch
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install nbconvert pandoc
+
+      - name: Install LaTeX (required for PDF conversion)
+        run: sudo apt-get install -y texlive-xetex texlive-fonts-recommended texlive-plain-generic
+
+      - name: Convert Jupyter notebooks to PDF
+        run: |
+          jupyter nbconvert --to pdf Second_Project.ipynb
+          jupyter nbconvert --to pdf Third_Project.ipynb
+
+      - name: Convert README.md to PDF
+        run: pandoc README.md -o README.pdf
+
+      - name: Commit and push PDFs
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add *.pdf
+          git commit -m "Auto-generated PDFs from GitHub Actions" || echo "No changes to commit"
+          git push
