@@ -560,8 +560,3 @@ df.write.csv("output.csv", header=True)
 **Explanation:** Saves DataFrame as a CSV file with headers.
 
 ---
-
-### Next Steps
-
-- Add more transformations, optimizations, and real-world use cases!
-
