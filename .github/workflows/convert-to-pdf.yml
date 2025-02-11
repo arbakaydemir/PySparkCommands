@@ -26,9 +26,7 @@ jobs:
       - name: Install Pandoc (latest version)
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/jgm/pandoc/releases/download/2.19.2/pandoc-2.19.2-1-amd64.deb
-          sudo dpkg -i pandoc-2.19.2-1-amd64.deb
+          sudo apt-get install -y pandoc
 
       - name: Install LaTeX (required for PDF conversion)
         run: |
@@ -39,9 +37,13 @@ jobs:
           jupyter nbconvert --to pdf Second_Project.ipynb --log-level=ERROR || echo "Failed to convert Second_Project.ipynb"
           jupyter nbconvert --to pdf Third_Project.ipynb --log-level=ERROR || echo "Failed to convert Third_Project.ipynb"
 
+      - name: Remove YAML Front Matter from README (if present)
+        run: |
+          sed -i '1,/^---$/d' README.md  # Removes YAML front matter if it exists
+
       - name: Convert README.md to PDF
         run: |
-          pandoc README.md -o README.pdf --pdf-engine=xelatex --strip-yaml-front-matter || echo "Failed to convert README.md"
+          pandoc README.md -o README.pdf --pdf-engine=xelatex || echo "Failed to convert README.md"
 
       - name: Upload PDF artifacts
         uses: actions/upload-artifact@v4
