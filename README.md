@@ -9,12 +9,10 @@
 5. [Reading JSON File](#reading-JSON-File)
 6. [Basic DataFrame Operations](#basic-dataframe-operations)
 7. [DataFrame Transformation](#DataFrame-Transformation)
-8. [Filtering and Selecting Data](#filtering-and-selecting-data)
-9. [Aggregations](#aggregations)
-10. [Window Functions](#window-functions)
-11. [Data Transformation](#data-transformation)
-12. [Joining DataFrames](#joining-dataframes)
-13. [Saving Data](#saving-data)
+8. [Window Functions](#window-functions)
+9. [Data Cleaning and Casting](#Data-Cleaning-and-Casting)
+10. [Joining DataFrames](#joining-dataframes)
+11. [Saving Data](#saving-data)
 
 ---
 
@@ -218,16 +216,6 @@ grouped_df.agg(
 ).show()
 
 ```
-### Casting
-*     df_new1 = df_new1.withColumn("position", col("position").cast("integer"))
-* 
-
-
-```python
-df_new1 = df_new1.withColumn("position", col("position").cast("integer"))
-```
-
----
 
 ## Window Functions
 
@@ -242,17 +230,86 @@ df.withColumn("rank", row_number().over(window_spec)).show()
 **Explanation:** Assigns a ranking within each department based on salary.
 
 ---
-## Data Cleaning
+## Data Cleaning and Casting
 
 ### Handling Missing Values
+*     In case of dot: It is advisible to change datatype to double or float in case we have data such as '2.5' as string. We don't need to remove dots if we want to convert them to a numerical data type. The dot represents a decimal point, and retaining it is essential for preserving the fractional part of the number.
 
-*     df.na.fill(0)
-*     df.na.drop()
+*     In case of comma: Let's say we have comma in the data, and they intend to represent decimal points. In those conditions, we must convert commas to dots, and then we can cast the strings to a nmumerical data type such as float or double.
+
+*     In case of percentage: First we need to remove the percentage sign and then convert the remaining string to a numerical data type, such as float. After removing, we should divide the resulting number by 100 to convert it to a decimal. Check below example:
 
 ```python
-df.na.fill(0)
-df.na.drop()
+# Remove percentage sign and cast to float
+
+df = df.withColumn("value", regexp_replace(col("value"), " %", "").cast("float") / 100
 ```
+*     In case of negative number: In this condition, we don't need to remove any character. We can directly convert it to an integer.
+
+*     In case of negative number contains comma:
+
+1. Comma as Thousands Separator: If the comma is intended to separate thousands, you can remove the comma and then cast the string to an integer or float.
+
+```python
+# Remove commas and cast to integer
+
+df = df.withColumn("value", regexp_replace(col("value"), ",", "").cast("integer"))
+```
+
+2. Comma as Decimal Separator: If the comma is meant to be a decimal point, you should replace the comma with a dot before casting it to a float or double.
+
+```python
+# Replace commas with dots and cast to float
+
+df = df.withColumn("value", regexp_replace(col("value"), ",", ".").cast("float"))
+```
+
+*    In case of plus sign with commas:Remove the plus sign: The plus sign typically indicates that the value is greater than or equal to the specified number. Remove commas: If the commas are used as thousands separators. Cast to an appropriate numerical type: Depending on your need, you can cast it to an integer or float.
+
+```python
+# Remove plus sign, remove commas, and cast to integer df = df.withColumn("value", regexp_replace(col("value"), "[,+]", "").cast("integer"))
+```
+
+*     Using different methods to do same job
+
+```python
+# Remove plus sign, remove commas, and cast to integer df = df.withColumn("value", regexp_replace(col("value"), "[,+]", "").cast("integer"))
+```
+*     Alternatively, we can choose to use
+
+```python
+df = df.withColumn("value", regexp_replace(col("value"), "[^0-9]", "").cast("integer"))
+
+```
+*     [^0-9]:This regex pattern matches any character that is not a digit (0-9). The regexp_replace function will remove all non-digit characters from the "value" column.
+
+**Differences and Similarities:**
+
+**Differences:**
+
+Scope of Removal: The first snippet only removes commas and plus signs, whereas the second snippet removes all non-digit characters. This means the second snippet is more general and can handle various types of non-digit characters.
+
+Use Case: The first snippet is suitable for cases where you specifically want to remove commas and plus signs. The second snippet is suitable for cases where you want to remove any non-numeric characters, ensuring that only digits remain.
+
+**Similarities:**
+
+Outcome: For the specific examples given (like "1,000,000+"), both snippets will produce the same cleaned value ("1000000").
+
+Casting: Both snippets cast the cleaned value to an integer using the cast("integer") method.
+
+**When to Use Each Snippet:**
+
+Use Code Snippet 1:
+
+When your data specifically contains commas and plus signs that you want to remove.
+
+Example: "1,000,000+" to "1000000".
+
+Use Code Snippet 2:
+
+When your data may contain various non-digit characters, and you want to ensure that only numeric digits remain.
+
+Example: "1,000,000+ USD" or "3.5%" to "1000000" and "35", respectively.
 
 ---
 
