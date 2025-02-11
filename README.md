@@ -8,7 +8,7 @@
 4. [Authorize access to Google Drive account and Mount Google Drive to the Colab environment](#Authorize-access-to-Google-Drive-account-and-Mount-Google-Drive-to-the-Colab-environment)
 5. [Reading JSON File](#reading-JSON-File)
 6. [Basic DataFrame Operations](#basic-dataframe-operations)
-7. [Decision of integer, float and double](#Decision-of-integer,-float-and-double)
+7. [Decision of integer, float and double](#decision-of-integer-float-and-double)
 8. [DataFrame Transformation](#DataFrame-Transformation)
 9. [Some of the most commonly used operators](#Some-of-the-most-commonly-used-operators)
 10. [Window Functions](#window-functions)
@@ -23,7 +23,7 @@
 
 PySpark is the Python API for Apache Spark, used for big data processing. This cheatsheet provides quick reference code snippets with explanations in Second and Third Projects. They are provided as ipynb files in the reopistory.
 
----
+
 
 ## Installing PySpark and Importing
 * We use below code to install PySpark in Google Colab. 
@@ -39,7 +39,7 @@ PySpark is the Python API for Apache Spark, used for big data processing. This c
 import pyspark
 ```
 
----
+
 
 ## Creating a SparkSession and Importing Necessary Libraries
 ```python
@@ -62,7 +62,7 @@ from pyspark.sql.functions import *
 
 This imports all the functions available in the pyspark.sql.functions module. These functions are used to perform various operations on DataFrames, such as data manipulation, aggregation, and transformation.
 
----
+
 
 ##  Authorize access to Google Drive account and Mount Google Drive to the Colab environment
 * To give authorization we need to use below
@@ -70,7 +70,7 @@ This imports all the functions available in the pyspark.sql.functions module. Th
 from google.colab import drive
 ```
 
----
+
 
 ## Reading JSON File
 
@@ -87,7 +87,7 @@ file_path = "/content/gdrive/MyDrive/Colab Notebooks/Third Project/dataset.json"
 df = spark.read.option("multiline","true").json(file_path)
 ```
 
----
+
 
 ## Basic DataFrame Operations
 
@@ -118,7 +118,7 @@ print(df_new1.dtypes)
 
 **Explanation:** Essential functions for understanding data structure and basic statistics.
 
----
+
 
 ## Decision of integer, float and double
 
@@ -155,7 +155,7 @@ Precision: Exact numerical values without fractional parts.
 
 Use Case: When your data consists of whole numbers.
 
----
+
 
 ## DataFrame Transformation
 ### Column Operations
@@ -210,7 +210,7 @@ df_new1.select(
 
 ```
 
----
+
 
 ### Row Operations Filtering and Selecting Data
 *     df.drop("column1"): Drop method is used for dropping a column. 
@@ -255,7 +255,7 @@ df_new1.where(length(col("country")) < 5).show()
 df_new1.limit(10).show()
 ```
 
----
+
 ## Some of the most commonly used operators
 
 **Comparison Operators:**
@@ -281,7 +281,7 @@ OR: |
 
 NOT: ~
 
----
+
 
 ### Aliasing
 *     df.alias(): It gives a new name to the DataFrame. New names can be used in joins.
@@ -302,7 +302,7 @@ grouped_df.agg(
 ).show()
 ```
 
----
+
 
 ### Aggregations
 *     grouped_df = df.groupBy("column1").show(): This groups the dataframe based on given column.
@@ -354,7 +354,7 @@ df.withColumn("rank", row_number().over(window_spec)).show()
 
 **Explanation:** Assigns a ranking within each department based on salary.
 
----
+
 ## Data Cleaning and Casting
 
 ### Check for Duplicates in Each Column: Iterate over each column, group by that column, count the occurrences, and filter to show only duplicates.
@@ -487,7 +487,7 @@ df_new1 = df.withColumn("density_per_square_km", regexp_replace(col("density_per
           .withColumn("net_change", regexp_replace(col("net_change"), ",", "").cast("integer"))\
           .withColumn("population", regexp_replace(col("population"), ",", "").cast("integer"))\
           .withColumn("fertility_rate", col("fertility_rate").cast("float"))
----
+
 
 2.   Percentage sign in "urban population", "world share" and "yearly change" columns.
 
@@ -530,7 +530,7 @@ df_A = df_A.fillna({"population": df_A.agg(avg("population")).first()[0]})
       df_A.show()
 ```
 
----
+
 
 ## Joining DataFrames
 
@@ -549,7 +549,7 @@ df.withColumn("rank", row_number().over(window_spec)).show()
 
 **Explanation:** Assigns a ranking within each department based on salary.
 
----
+
 
 ## Saving Data
 
@@ -559,4 +559,4 @@ df.write.csv("output.csv", header=True)
 
 **Explanation:** Saves DataFrame as a CSV file with headers.
 
----
+
