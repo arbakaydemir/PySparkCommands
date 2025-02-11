@@ -237,7 +237,9 @@ df.withColumn("rank", row_number().over(window_spec)).show()
 
 *     In case of comma: Let's say we have comma in the data, and they intend to represent decimal points. In those conditions, we must convert commas to dots, and then we can cast the strings to a nmumerical data type such as float or double.
 
-*     In case of percentage: First we need to remove the percentage sign and then convert the remaining string to a numerical data type, such as float. After removing, we should divide the resulting number by 100 to convert it to a decimal. Check below example:
+*     In case of percentage: First we need to remove the percentage sign and then convert the remaining string to a numerical data type, such as float. After removing, we should divide the resulting number by 100 to convert it to a decimal.
+
+* Check below example:
 
 ```python
 # Remove percentage sign and cast to float
@@ -248,7 +250,7 @@ df = df.withColumn("value", regexp_replace(col("value"), " %", "").cast("float")
 
 *     In case of negative number contains comma:
 
-1. Comma as Thousands Separator: If the comma is intended to separate thousands, you can remove the comma and then cast the string to an integer or float.
+     1. Comma as Thousands Separator: If the comma is intended to separate thousands, you can remove the comma and then cast the string to an integer or float.
 
 ```python
 # Remove commas and cast to integer
@@ -256,7 +258,7 @@ df = df.withColumn("value", regexp_replace(col("value"), " %", "").cast("float")
 df = df.withColumn("value", regexp_replace(col("value"), ",", "").cast("integer"))
 ```
 
-2. Comma as Decimal Separator: If the comma is meant to be a decimal point, you should replace the comma with a dot before casting it to a float or double.
+     2. Comma as Decimal Separator: If the comma is meant to be a decimal point, you should replace the comma with a dot before casting it to a float or double.
 
 ```python
 # Replace commas with dots and cast to float
@@ -267,19 +269,22 @@ df = df.withColumn("value", regexp_replace(col("value"), ",", ".").cast("float")
 *    In case of plus sign with commas:Remove the plus sign: The plus sign typically indicates that the value is greater than or equal to the specified number. Remove commas: If the commas are used as thousands separators. Cast to an appropriate numerical type: Depending on your need, you can cast it to an integer or float.
 
 ```python
-# Remove plus sign, remove commas, and cast to integer df = df.withColumn("value", regexp_replace(col("value"), "[,+]", "").cast("integer"))
+# Remove plus sign, remove commas, and cast to integer
+
+df = df.withColumn("value", regexp_replace(col("value"), "[,+]", "").cast("integer"))
 ```
 
 *     Using different methods to do same job
 
 ```python
-# Remove plus sign, remove commas, and cast to integer df = df.withColumn("value", regexp_replace(col("value"), "[,+]", "").cast("integer"))
+# Remove plus sign, remove commas, and cast to integer
+
+df = df.withColumn("value", regexp_replace(col("value"), "[,+]", "").cast("integer"))
 ```
 *     Alternatively, we can choose to use
 
 ```python
 df = df.withColumn("value", regexp_replace(col("value"), "[^0-9]", "").cast("integer"))
-
 ```
 *     [^0-9]:This regex pattern matches any character that is not a digit (0-9). The regexp_replace function will remove all non-digit characters from the "value" column.
 
