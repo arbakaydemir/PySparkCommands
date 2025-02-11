@@ -37,12 +37,10 @@ jobs:
           jupyter nbconvert --to pdf Second_Project.ipynb --log-level=ERROR || echo "Failed to convert Second_Project.ipynb"
           jupyter nbconvert --to pdf Third_Project.ipynb --log-level=ERROR || echo "Failed to convert Third_Project.ipynb"
 
-      - name: Commit and push PDFs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git add *.pdf || echo "No PDFs to add"
-          git commit -m "Auto-generated PDFs from GitHub Actions" || echo "No changes to commit"
-          git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main || echo "No changes to push"
+      - name: Upload PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-files
+          path: |
+            Second_Project.pdf
+            Third_Project.pdf
