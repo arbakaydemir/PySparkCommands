@@ -126,6 +126,10 @@ df.distinct().count()
 *    df.select('*').show(): It selects all columns from DataFrame, and show() is used to display the result.
 *    df.select(["country"]).show(): In this one, there is one difference from df.select("column1"). Columns are provided as list.
 *    df.select(["country", "density_per_square_km"]).show(): In this one, there are two difference from df.select("column1"). Columns are provided as lists and multiple columns are selected.
+*    df.select(df["country"],df["density_per_square_km"]+1000).show(): It selects country column, then creates another column by adding 1000 to the values in the "density_per_square_km".
+*    df.select(df["country"],(df["population"] > 100000000).alias("is_population_greater_than_100M")).show(): This will select country column along wit population column with the values over 100000000. At the end this shows boolean values in new column.
+*    df.select(col("country"), (col("population") > 100000000).alias("is_population_greater_than_100M")).show(): This is similar to previous exmaple however this uses col function from pyspark.sql.functions to refer the columns. The col function is often used for better readability and to avoid potential issues with column names that contain spaces or special characters. At the end this shows boolean values in new column.
+*    Select is different than filter, because filter is focusing on values in dataframe as whole. With select function, we choose a specific column and seperate it from dataframe. 
             
 ```python
 df.drop("density_per_square_km")
@@ -143,48 +147,85 @@ df.select('*').show()
 df.select(["country"]).show()
 df.select(["country", "density_per_square_km"]).show()
 )
+df.select(df["country"],df["density_per_square_km"]+1000).show()
+df.select(df["country"],(df["population"] > 100000000).alias("is_population_greater_than_100M")).show()
+df.select(col("country"), (col("population") > 100000000).alias("is_population_greater_than_100M")).show()
 
 ```
 
+---
+
 ### Row Operations Filtering and Selecting Data
-df.drop("column1"):
-df.filter(df["column1"] > 30).show():
-df.where(df["age"] > 30).show():
+*     df.drop("column1"): Drop method is used for dropping a column. 
+*     df.filter(df["column1"] > 30).show(): This method is used for filtering DataFrame to include only rows where the value in the "age" column is greater than 30.
+*     df.where(df["age"] > 30).show(): where() method is an alias for the filter() method.  They have same purpose.
 
 ```python
 df.drop("density_per_square_km")
 df.filter(df["age"] > 30).show()
 df.where(df["age"] > 30).show()
 )
-
 ```
-
-### Aggregations
-
-```python
-df.groupBy("department").agg(avg("salary"), count("id")).show()
-Window.partitionBy("col").orderBy("col")
-```
-
-**Explanation:** Performs group-wise aggregations like average salary and count of employees.
 
 ---
 
-### Joins
-Inner Join: df1.join(df2, on="key", how="inner")
+### Aliasing
+*     df.alias(): It gives a new name to the DataFrame. New names can be used in joins.
+*     df.select(df["col1"].alias("new_name")): This gives a new name for a specified column.
+*     grouped_df.agg(
+    avg("salary").alias("avg_salary"),
+    sum("salary").alias("total_salary"),
+    count("id").alias("employee_count")
+).show()
 
-Left Join: df1.join(df2, on="key", how="left")
+```python
+df1 = df.alias("new_name")
+df.select(df["col1"].alias("new_name"))
+grouped_df.agg(
+    avg("salary").alias("avg_salary"),
+    sum("salary").alias("total_salary"),
+    count("id").alias("employee_count")
+).show()
+```
+
+---
+
+### Aggregations
+*     grouped_df = df.groupBy("column1").show(): This groups the dataframe based on given column.
+*     grouped_df.agg(count"id").show(): Counts the number of rows for each group.
+*     grouped_df.agg(avg("salary")).show(): It calculates the average value of the specified column for each group.
+*     grouped_df.agg(sum("salary")).show(): It calculates the sum value of the specified column for each group.
+*     grouped_df.agg(max("salary")).show(): It calculates the maximum value of the specified column for each group.
+*     grouped_df.agg(min("salary")).show(): It calculates the minimum value of the specified column for each group.
+*     grouped_df.agg(avg("salary"), sum("salary"), count("id")).show(): This is for performing multiple aggregations. It calculates avg and sum values for salary for each group then count id for each group.
+*     grouped_df.agg(
+    avg("salary").alias("avg_salary"),
+    sum("salary").alias("total_salary"),
+    count("id").alias("employee_count")
+).show(): This shows how to rename of each aggregated columns using alias() method.
+
+```python
+df.groupBy("department").agg(avg("salary"), count("id")).show()
+df.agg(count("column_name"))
+sum("column_name")
+max("column_name")
+min("column_name")
+grouped_df.agg(avg("salary"), sum("salary"), count("id")).show()
+grouped_df.agg(
+    avg("salary").alias("avg_salary"),
+    sum("salary").alias("total_salary"),
+    count("id").alias("employee_count")
+).show()
+
+```
+### Casting
+*     df_new1 = df_new1.withColumn("position", col("position").cast("integer"))
+* 
 
 
 ```python
-df1.join(df2, on="key", how="inner")
-df1.join(df2, on="key", how="left")
-
-window_spec = Window.partitionBy("department").orderBy("salary")
-df.withColumn("rank", row_number().over(window_spec)).show()
+df_new1 = df_new1.withColumn("position", col("position").cast("integer"))
 ```
-
-**Explanation:** Assigns a ranking within each department based on salary.
 
 ---
 
@@ -201,25 +242,36 @@ df.withColumn("rank", row_number().over(window_spec)).show()
 **Explanation:** Assigns a ranking within each department based on salary.
 
 ---
+## Data Cleaning
 
-## Data Transformation
+### Handling Missing Values
+
+*     df.na.fill(0)
+*     df.na.drop()
 
 ```python
-df = df.withColumn("new_salary", df["salary"] * 1.1)
-df.show()
+df.na.fill(0)
+df.na.drop()
 ```
-
-**Explanation:** Creates a new column by modifying an existing one.
 
 ---
 
 ## Joining DataFrames
 
+Inner Join: df1.join(df2, on="key", how="inner")
+
+Left Join: df1.join(df2, on="key", how="left")
+
+
 ```python
-df1.join(df2, df1["id"] == df2["id"], "inner").show()
+df1.join(df2, on="key", how="inner")
+df1.join(df2, on="key", how="left")
+
+window_spec = Window.partitionBy("department").orderBy("salary")
+df.withColumn("rank", row_number().over(window_spec)).show()
 ```
 
-**Explanation:** Performs an inner join on two DataFrames.
+**Explanation:** Assigns a ranking within each department based on salary.
 
 ---
 
