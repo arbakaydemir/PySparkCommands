@@ -561,13 +561,6 @@ df.write.csv("output.csv", header=True)
 
 ---
 
-### Notes
-
-- Use `.cache()` to cache a DataFrame in memory for faster operations.
-- Use `.explain()` to analyze query execution plans.
-
----
-
 ### Next Steps
 
 - Add more transformations, optimizations, and real-world use cases!
