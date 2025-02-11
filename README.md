@@ -363,12 +363,12 @@ df.withColumn("rank", row_number().over(window_spec)).show()
 
 *     Importing Functions: Import col and count from pyspark.sql.functions.
 *     Defining the Function: Define a function check_duplicates that:
-*     Retrieves the list of column names.
-*     Iterates over each column.
-*     Groups by the column and counts occurrences.
-*     Filters for counts greater than 1 (duplicates).
-*     Orders by count in descending order.
-*     Prints and shows the duplicates for each column.
+     *     Retrieves the list of column names.
+     *     Iterates over each column.
+     *     Groups by the column and counts occurrences.
+     *     Filters for counts greater than 1 (duplicates).
+     *     Orders by count in descending order.
+     *     Prints and shows the duplicates for each column.
 *     Calling the Function: Call the function with the DataFrame to check for duplicates in each column.
 
 ```python
