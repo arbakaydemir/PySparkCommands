@@ -1,4 +1,4 @@
-name: Convert Notebooks & README to PDF
+name: Convert Notebooks to PDF
 
 on:
   push:
@@ -36,10 +36,6 @@ jobs:
         run: |
           jupyter nbconvert --to pdf Second_Project.ipynb --log-level=ERROR || echo "Failed to convert Second_Project.ipynb"
           jupyter nbconvert --to pdf Third_Project.ipynb --log-level=ERROR || echo "Failed to convert Third_Project.ipynb"
-
-      - name: Convert README.md to PDF
-        run: |
-          pandoc README.md -o README.pdf --pdf-engine=xelatex || echo "Failed to convert README.md"
 
       - name: Commit and push PDFs
         env:
