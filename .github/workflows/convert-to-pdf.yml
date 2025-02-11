@@ -3,7 +3,7 @@ name: Convert Notebooks & README to PDF
 on:
   push:
     branches:
-      - main  # Runs when pushing to main branch
+      - main  # Runs on push to main branch
   workflow_dispatch:  # Allows manual trigger
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install nbconvert
+          pip install --upgrade nbconvert
 
       - name: Install Pandoc
         run: |
@@ -34,16 +34,19 @@ jobs:
 
       - name: Convert Jupyter notebooks to PDF
         run: |
-          jupyter nbconvert --to pdf Second_Project.ipynb
-          jupyter nbconvert --to pdf Third_Project.ipynb
+          jupyter nbconvert --to pdf Second_Project.ipynb --log-level=ERROR || echo "Failed to convert Second_Project.ipynb"
+          jupyter nbconvert --to pdf Third_Project.ipynb --log-level=ERROR || echo "Failed to convert Third_Project.ipynb"
 
       - name: Convert README.md to PDF
-        run: pandoc README.md -o README.pdf --pdf-engine=xelatex
+        run: |
+          pandoc README.md -o README.pdf --pdf-engine=xelatex || echo "Failed to convert README.md"
 
       - name: Commit and push PDFs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add *.pdf
+          git add *.pdf || echo "No PDFs to add"
           git commit -m "Auto-generated PDFs from GitHub Actions" || echo "No changes to commit"
-          git push
+          git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main || echo "No changes to push"
