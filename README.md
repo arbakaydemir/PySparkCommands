@@ -1,4 +1,4 @@
-# PySpark Cheatsheet
+# PySpark Cheatsheet in VS Code
 
 ## Table of Contents
 
