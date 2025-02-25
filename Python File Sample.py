@@ -7,4 +7,5 @@ if __name__ == "__main__":
 
 print("Thank you for using this program!")  # This line is not part of the function
 # End of Python File Sample.py
+# Commit staged (Amend)
 
