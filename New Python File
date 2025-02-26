@@ -14,6 +14,10 @@ df = spark.read.csv("/home/rbakydemir/PySparkCommands/airport_traffic_2024.csv",
 df.show(5)
 
 # Check schema
+<<<<<<< HEAD
 df.printSchema()
 
 # Add this line to commit the changes to the repository
+=======
+df.printSchema()
+>>>>>>> 6512a9bddeb5afa4ad138bcc1e96b37ac5d5e3f1
