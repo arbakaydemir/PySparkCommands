@@ -1,0 +1,27 @@
+from pyspark.sql import SparkSession
+
+# Create a Spark session
+spark = SparkSession.builder \
+    .appName("PySpark Example") \
+    .getOrCreate()
+
+# Create a DataFrame
+data = [("James", "Smith", "USA", 30),
+        ("Michael", "Rose", "USA", 40),
+        ("Robert", "Williams", "USA", 50),
+        ("Maria", "Jones", "USA", 60),
+        ("Jen", "Brown", "USA", 70)]
+
+columns = ["FirstName", "LastName", "Country", "Age"]
+
+df = spark.createDataFrame(data, columns)
+
+# Show the DataFrame
+df.show()
+
+# Perform some transformations
+df_filtered = df.filter(df.Age > 40)
+df_filtered.show()
+
+# Stop the Spark session
+spark.stop()
