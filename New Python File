@@ -1,0 +1,23 @@
+#Import the pySpark
+import pyspark
+
+#Import necessary libraries
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+
+#Creating a Spark Session
+spark = SparkSession.builder.appName("Airport_Traffic").getOrCreate()
+
+#Reading the data from the source
+df = spark.read.csv("/home/rbakydemir/PySparkCommands/airport_traffic_2024.csv", header=True)
+
+df.show(5)
+
+# Check schema
+<<<<<<< HEAD
+df.printSchema()
+
+# Add this line to commit the changes to the repository
+=======
+df.printSchema()
+>>>>>>> 6512a9bddeb5afa4ad138bcc1e96b37ac5d5e3f1
